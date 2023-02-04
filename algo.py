@@ -53,6 +53,26 @@ class Algo:
 
         return newHallList
     
-     def backtrack():
-         pass
+      def backtrack(self, halls_list, groups_list, constraints_list, assigned_halls=[]):
+        
+        if len(halls_list) == 0 or len(assigned_halls) == len(halls_list):
+#             return  [x[1] for x in assigned_halls]
+            hall_to_group = {hall_num: group for hall_num, group in assigned_halls}
+            sorted_halls = sorted(hall_to_group.keys())
+            return [hall_to_group[hall_num] for hall_num in sorted_halls]
+
+#             return sorted(assigned_halls, key=lambda x: x[1])
+
+        
+
+        next_hall = self.MRV(halls_list)
+        next_hall_domain = self.LCV(next_hall)
+        for i in next_hall_domain:
+            assigned_halls_copy =copy.deepcopy(assigned_halls)
+            assigned_halls_copy.append((next_hall.hall_number, i))
+            remaining_halls = self.forward_checking(halls_list, next_hall, i)
+            solution = self.backtrack(remaining_halls, groups_list, constraints_list, assigned_halls_copy)
+            if solution != False:
+                return solution
+        return False
             
