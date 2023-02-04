@@ -52,3 +52,7 @@ class Algo:
                     hall.hall_constraints.remove(assignedValue)
 
         return newHallList
+    
+     def backtrack():
+         pass
+            
