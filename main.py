@@ -85,6 +85,7 @@ print(LCVOutput)
 print(constraints_list)
 # give the ith LCVOutput as the assigned value
 newHallsList = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
+solution = x.backtrack(halls_list, groups_list, constraints_list)
 
 [print("domain of hall", i.hall_number, ":", i.hall_constraints) for i in newHallsList]
 
