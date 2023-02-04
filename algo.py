@@ -56,11 +56,8 @@ class Algo:
       def backtrack(self, halls_list, groups_list, constraints_list, assigned_halls=[]):
         
         if len(halls_list) == 0 or len(assigned_halls) == len(halls_list):
-
-            hall_to_group = {hall_num: group for hall_num, group in assigned_halls}
-            sorted_halls = sorted(hall_to_group.keys())
-            return [hall_to_group[hall_num] for hall_num in sorted_halls]
-
+            return  [group for hall, group in assigned_halls]
+        
         next_hall = self.MRV(halls_list)
         next_hall_domain = self.LCV(next_hall)
         for i in next_hall_domain:
