@@ -2,99 +2,60 @@ from groups import Groups
 from hall import *
 from algo import *
 
-
-def find_hall(number, halls_list):
-    for hall in halls_list:
-        if hall.hall_number == number:
-            return hall
-
-
-halls, groups = input().split(" ")
-halls = int(halls)
-groups = int(groups)
-preferences_list = []
-
-
-for i in range(0, groups):
-    preferences_list.append(input())
-
+halls, groups = map(int, input().split(" "))
+preferences_list = [list(map(int, input().split(" "))) for i in range(groups)]
 No_constraints = int(input())
+constraints_list = [tuple(map(int, input().split(" "))) for i in range(No_constraints)]
 
-constraints_list = []
-
-
-for i in range(0, No_constraints):
-    constraints_list.append(tuple([int(i) for i in input().split()]))
-
-halls_constraints = {}
-
-new_list = []
-
-for i in preferences_list:
-    new_list.append(i.split(" "))
-
-halls_list = []
-
-for i in range(1, halls + 1):
-    halls_list.append(Hall(i, None))
-
-# print(halls_list)
-
-groups_list = []
-
-for i in range(1, groups + 1):
-    groups_list.append(Groups(i, None))
-
-preferences_list_int = []
-
-# print(groups_list)
-
-for i in new_list:
-        int_list = [int(x) for x in i]
-        preferences_list_int.append(int_list)
-
-
-# print(preferences_list_int)
-
+halls_dict = {i: Hall(i) for i in range(1, halls + 1)}
+groups_list = [Groups(i, None) for i in range(1, groups + 1)]
 
 for i in range(len(groups_list)):
-    the_group = groups_list[i]
-    the_preference = preferences_list_int[i]
-    the_group.set_preferences(the_preference)
-    for preference in the_preference:
-        the_hall = find_hall(preference, halls_list)
-        the_hall.add_constraint(the_group.group_number)
+    groups_list[i].set_preferences(preferences_list[i])
+    for preference in preferences_list[i]:
+        the_hall = halls_dict[preference]
+        the_hall.add_constraint(groups_list[i].group_number)
 
+halls_list = [halls_dict[i] for i in range(1, halls + 1)]
+for i in halls_list:
+    print("domain of hall", i.hall_number, ":", i.hall_constraints)
+x = Algo(groups_list, constraints_list)
 
-# print(preferences_list)
-# # print(new_list)
-# # print(constraints_list)
-# print(halls_list[1].hall_constraints)
-# print(halls_list[2].hall_number)
-# print(halls_list)
-# print(groups_list)
-[print("domain of hall", i.hall_number, ":", i.hall_constraints) for i in halls_list]
-x = Algo(groups_list,constraints_list)
 # MRV returns the most constrained variable
 mostConstrainedHall = x.MRV(halls_list)
-print(mostConstrainedHall.hall_number)
+print("-" * 10, "\nMost Constrained Hall is: ")
+print(mostConstrainedHall.hall_number, "\n", "-" * 10)
+
 # LCV returns a sorted list of groups according to the number of their preferences in descending order
 LCVOutput = x.LCV(mostConstrainedHall)
+print("lcv output: ")
 print(LCVOutput)
+print("-" * 10)
 
-print(constraints_list)
+print("constraints list is: \n", constraints_list)
+print("-" * 10)
+
 # give the ith LCVOutput as the assigned value
-newHallsList = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
-solution = x.backtrack(halls_list, groups_list, constraints_list)
-if solution == False:
-    print("No")
+# new_halls_list = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
+# solution = x.backtrack(halls_list)
+#
+# if not solution:
+#     print("No")
+# else:
+#     print(f"backtracking solurion is: ", solution)
+
+# for hall in new_halls_list:
+#     print(f"domain of hall {hall.hall_number}: {hall.hall_constraints}")
+
+# Call the AC3 method on the instance
+if x.AC3(halls_list):
+    # Call the backtrack method on the instance
+    solution = x.backtrack(halls_list)
+    keys = sorted(solution.keys())
+    for key in keys:
+        print(solution[key], end= ' ')
 else:
-    print(solution)
-
-
-[print("domain of hall", i.hall_number, ":", i.hall_constraints) for i in newHallsList]
-
-
+    print("No solution found")
 
 """"
 6 3
