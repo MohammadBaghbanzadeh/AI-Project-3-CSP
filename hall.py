@@ -1,18 +1,27 @@
-
 class Hall:
 
-    # # constructor with hall number and constraints as parameters
-    def __init__(self, hall_number, hall_constraints):
+    def __init__(self, hall_number, hall_constraints= None):
+        if hall_constraints is None:
             self.hall_number = hall_number
             self.hall_constraints = []
-            if hall_constraints is not None:
-                for constraint in hall_constraints:
-                    self.hall_constraints.append(constraint)
+            self.domain = []
+        else:
+            self.hall_number = hall_number
+            self.hall_constraints = hall_constraints
+            self.domain = []
 
-    # a function to add constraints to halls
+    # @classmethod
+    # def hall_number(cls):
+    #     return cls
+
+    # def hall_set_constraint(self, constraints):
+    #     self.hall_constraints = constraints
+
     def add_constraint(self, constraint):
         self.hall_constraints.append(constraint)
 
-    # a function to show the constraints and the number of halls
     def __repr__(self):
         return f'Hall(hall_number={self.hall_number}, hall_constraints={self.hall_constraints})'
+
+    def get_hall_by_number(self, hall_number):
+        return next(hall for hall in halls_list if hall.hall_number == hall_number)

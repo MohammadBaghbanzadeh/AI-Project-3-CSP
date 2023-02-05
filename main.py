@@ -33,7 +33,6 @@ print(LCVOutput)
 print("-" * 10)
 
 print("constraints list is: \n", constraints_list)
-print("-" * 10)
 
 # give the ith LCVOutput as the assigned value
 # new_halls_list = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
@@ -51,9 +50,7 @@ print("-" * 10)
 if x.AC3(halls_list):
     # Call the backtrack method on the instance
     solution = x.backtrack(halls_list)
-    keys = sorted(solution.keys())
-    for key in keys:
-        print(solution[key], end= ' ')
+    print(solution)
 else:
     print("No solution found")
 
