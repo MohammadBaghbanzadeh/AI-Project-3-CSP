@@ -1,6 +1,16 @@
 from groups import Groups
 from hall import *
 from algo import *
+from datetime import datetime
+
+
+def return_solution(sol: 'dict') -> list:
+    keys = sorted(sol.keys())
+    arr = []
+    for key in keys:
+        arr.append(sol[key])
+    return arr
+
 
 halls, groups = map(int, input().split(" "))
 preferences_list = [list(map(int, input().split(" "))) for i in range(groups)]
@@ -33,26 +43,35 @@ print(LCVOutput)
 print("-" * 10)
 
 print("constraints list is: \n", constraints_list)
+print("-" * 10)
 
-# give the ith LCVOutput as the assigned value
-# new_halls_list = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
-# solution = x.backtrack(halls_list)
-#
-# if not solution:
-#     print("No")
-# else:
-#     print(f"backtracking solurion is: ", solution)
+ans = input("Would you like to calculate with backtracking(b) or AC-3 algorithm(a), (b/a): ")
+ans = ans.lower()
+
+if ans == 'b':
+    # give the ith LCVOutput as the assigned value
+    new_halls_list = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
+    start = datetime.now()
+    solution = x.backtrack(halls_list)
+    end = datetime.now()
+    if not solution:
+        print("No")
+    else:
+        print(f"backtracking solution is: ", return_solution(solution), f" and it takes: {end - start} seconds")
+elif ans == 'a':
+    # Call the AC3 method on the instance
+    if x.AC3(halls_list):
+        start = datetime.now()
+        # Call the backtrack method on the instance
+        solution = x.backtrack(halls_list)
+        end = datetime.now()
+        print(f"AC-3 solution is: ", return_solution(solution), f" and it takes: {end - start} seconds")
+    else:
+        print("No")
 
 # for hall in new_halls_list:
 #     print(f"domain of hall {hall.hall_number}: {hall.hall_constraints}")
 
-# Call the AC3 method on the instance
-if x.AC3(halls_list):
-    # Call the backtrack method on the instance
-    solution = x.backtrack(halls_list)
-    print(solution)
-else:
-    print("No solution found")
 
 """"
 6 3
