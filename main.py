@@ -1,21 +1,19 @@
-from groups import Groups
-from hall import *
-from algo import *
 from datetime import datetime
+from groups import Groups
+from hall import Hall
+from algo import Algo
 
 
-def return_solution(sol: 'dict') -> list:
+def return_solution(sol: dict) -> list:
     keys = sorted(sol.keys())
-    arr = []
-    for key in keys:
-        arr.append(sol[key])
+    arr = [sol[key] for key in keys]
     return arr
 
 
-halls, groups = map(int, input().split(" "))
-preferences_list = [list(map(int, input().split(" "))) for i in range(groups)]
-No_constraints = int(input())
-constraints_list = [tuple(map(int, input().split(" "))) for i in range(No_constraints)]
+halls, groups = map(int, input().split())
+preferences_list = [list(map(int, input().split())) for _ in range(groups)]
+no_constraints = int(input())
+constraints_list = [tuple(map(int, input().split())) for _ in range(no_constraints)]
 
 halls_dict = {i: Hall(i) for i in range(1, halls + 1)}
 groups_list = [Groups(i, None) for i in range(1, groups + 1)]
@@ -27,51 +25,30 @@ for i in range(len(groups_list)):
         the_hall.add_constraint(groups_list[i].group_number)
 
 halls_list = [halls_dict[i] for i in range(1, halls + 1)]
-for i in halls_list:
-    print("domain of hall", i.hall_number, ":", i.hall_constraints)
+
 x = Algo(groups_list, constraints_list)
+most_constrained_hall = x.MRV(halls_list)
+LCV_output = x.LCV(most_constrained_hall)
 
-# MRV returns the most constrained variable
-mostConstrainedHall = x.MRV(halls_list)
-print("-" * 10, "\nMost Constrained Hall is: ")
-print(mostConstrainedHall.hall_number, "\n", "-" * 10)
-
-# LCV returns a sorted list of groups according to the number of their preferences in descending order
-LCVOutput = x.LCV(mostConstrainedHall)
-print("lcv output: ")
-print(LCVOutput)
-print("-" * 10)
-
-print("constraints list is: \n", constraints_list)
-print("-" * 10)
-
-ans = input("Would you like to calculate with backtracking(b) or AC-3 algorithm(a), (b/a): ")
-ans = ans.lower()
+ans = input("Would you like to calculate with backtracking(b) or AC-3 algorithm(a), (b/a): ").lower()
 
 if ans == 'b':
-    # give the ith LCVOutput as the assigned value
-    new_halls_list = x.forward_checking(halls_list, mostConstrainedHall, LCVOutput[0])
+    new_halls_list = x.forward_checking(halls_list, most_constrained_hall, LCV_output[0])
     start = datetime.now()
     solution = x.backtrack(halls_list)
     end = datetime.now()
     if not solution:
         print("No")
     else:
-        print(f"backtracking solution is: ", return_solution(solution), f" and it takes: {end - start} seconds")
+        print(f"Backtracking solution is: {return_solution(solution)} and it takes: {end - start} seconds")
 elif ans == 'a':
-    # Call the AC3 method on the instance
     if x.AC3(halls_list):
         start = datetime.now()
-        # Call the backtrack method on the instance
         solution = x.backtrack(halls_list)
         end = datetime.now()
-        print(f"AC-3 solution is: ", return_solution(solution), f" and it takes: {end - start} seconds")
+        print(f"AC-3 solution is: {return_solution(solution)} and it takes: {end - start} seconds")
     else:
         print("No")
-
-# for hall in new_halls_list:
-#     print(f"domain of hall {hall.hall_number}: {hall.hall_constraints}")
-
 
 """"
 6 3
@@ -104,5 +81,3 @@ elif ans == 'a':
 6 3
 1 5
 """
-
-# if __name__ == '__main__':
